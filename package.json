@@ -1,0 +1,13 @@
+{
+  "name": "sivart-GCE",
+  "version": "1.0.0",
+  "description": "GCE utilities for sivart",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zzo/sivart-GCE.git"
+  },
+  "dependencies": {
+    "googleapis": "^2.0.2"
+  },
+  "license": "Apache-2.0"
+}
