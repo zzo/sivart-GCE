@@ -15,7 +15,7 @@ function Instance(projectId, zone, instanceName) {
 Instance.prototype.create = function(args, cb) {
   var me = this;
   this.gce.start(function() {
-    var data = args.json;
+    var data = args.instance;
 
     if (args.file) {
       data = JSON.parse(fs.readFileSync(args.file));
