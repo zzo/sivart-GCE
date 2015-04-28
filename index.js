@@ -52,6 +52,20 @@ GCE.prototype.createInstance = function(instance, cb) {
   });
 };
 
+GCE.prototype.deleteInstance = function(instance, cb) {
+  var request = { instance: instance };
+  var me = this;
+  this.compute.instances.delete(request, function(error, result) {
+    if (error) {
+      cb(error);
+    } else if (result.kind == 'compute#operation') {
+      me.waitForZoneOperation(result, cb);
+    } else {
+      cb(result);
+    }
+  });
+};
+
 GCE.prototype.getZoneOperation = function(operation, cb) {
   this.compute.zoneOperations.get(operation, cb);
 };
@@ -75,6 +89,21 @@ GCE.prototype.waitForZoneOperation = function(res, cb) {
 
 GCE.prototype.getSerialConsoleOutput = function(instance, cb) {
   this.compute.instances.getSerialPortOutput(instance, cb);
+};
+
+GCE.prototype.setMetaData = function(data, cb) {
+  var me = this;
+  console.log(data);
+  this.compute.instances.setMetadata(data, function(error, result) {
+    if (error) {
+      cb(error);
+    } else if (result.kind == 'compute#operation') {
+      console.log(result);
+      me.waitForZoneOperation(result, cb);
+    } else {
+      cb(null, result);
+    }
+  });
 };
 
 module.exports = GCE;

@@ -25,6 +25,17 @@ Instance.prototype.create = function(args, cb) {
   });
 };
 
+/*
+ * Delete a GCE VM instance
+ */
+Instance.prototype.delete = function(instance, cb) {
+  var me = this;
+  this.gce.start(function() {
+    me.gce.deleteInstance(instance, cb);
+  });
+};
+
+
 /**
  * Send console lines while still wanted.
  */
@@ -49,6 +60,16 @@ Instance.prototype.tail_gce_console = function(cb) {
       }
       getout();
     });
+};
+
+Instance.prototype.setMetaData = function(data, cb) {
+  var me = this;
+  this.gce.start(function() {
+    //var body = { kind: "compute#metadata" };
+    var body = { };
+    body.items = [data];
+    me.gce.setMetaData({ instance: me.instanceName, resource: body }, cb);
+  });
 };
 
 module.exports = Instance;
