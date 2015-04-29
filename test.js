@@ -15,7 +15,7 @@ sivart_master.create({ file: '../sivart/gce/sivart-master.json' }, function(err,
 });
 */
 
-sivart_master.delete('sivart-master', function(err, resp) {
+sivart_master.delete(function(err, resp) {
   if (err) {
     console.log('err');
     console.log(err);

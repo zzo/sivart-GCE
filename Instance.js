@@ -28,10 +28,10 @@ Instance.prototype.create = function(args, cb) {
 /*
  * Delete a GCE VM instance
  */
-Instance.prototype.delete = function(instance, cb) {
+Instance.prototype.delete = function(cb) {
   var me = this;
   this.gce.start(function() {
-    me.gce.deleteInstance(instance, cb);
+    me.gce.deleteInstance(me.instanceName, cb);
   });
 };
 
