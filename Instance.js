@@ -66,7 +66,7 @@ Instance.prototype.setMetaData = function(data, cb) {
   var me = this;
   this.gce.start(function() {
     var body = { items: data };
-    me.gce.setMetaData({ instance: me.instanceName, resource: body }, cb);
+    me.gce.setMetaData({ project: me.projectId, zone: me.zone, instance: me.instanceName, resource: body }, cb);
   });
 };
 
