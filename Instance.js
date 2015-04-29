@@ -65,9 +65,7 @@ Instance.prototype.tail_gce_console = function(cb) {
 Instance.prototype.setMetaData = function(data, cb) {
   var me = this;
   this.gce.start(function() {
-    //var body = { kind: "compute#metadata" };
-    var body = { };
-    body.items = [data];
+    var body = { items: data };
     me.gce.setMetaData({ instance: me.instanceName, resource: body }, cb);
   });
 };

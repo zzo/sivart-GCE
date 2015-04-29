@@ -93,7 +93,6 @@ GCE.prototype.getSerialConsoleOutput = function(instance, cb) {
 
 GCE.prototype.setMetaData = function(data, cb) {
   var me = this;
-  console.log(data);
   this.compute.instances.setMetadata(data, function(error, result) {
     if (error) {
       cb(error);
