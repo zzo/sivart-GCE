@@ -60,3 +60,5 @@ Instance.prototype.tail_gce_console = function(cb) {
       getout();
     });
 };
+
+module.exports = Instance;
