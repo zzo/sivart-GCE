@@ -8,4 +8,4 @@ try {
   gce_args.keyFilename = keyFilename;
 } catch(e) {}
 
-modules.exports = gce_args;
+module.exports = gce_args;
