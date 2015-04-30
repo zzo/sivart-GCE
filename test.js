@@ -1,5 +1,6 @@
 var Ins = require('./Instance');
-var projectId = 'focal-inquiry-92622';
+var Auth = require('./Auth');
+var projectId = Auth.projectId;
 
 var sivart_master = new Ins(projectId, 'us-central1-a', 'sivart-master');
 

@@ -1,6 +1,5 @@
 var GCE = require('./index');
 var fs = require('fs');
-//var defaultZone = 'us-central1-a';
 
 function Instance(projectId, zone, instanceName) {
   this.projectId = projectId;
@@ -61,13 +60,3 @@ Instance.prototype.tail_gce_console = function(cb) {
       getout();
     });
 };
-
-Instance.prototype.setMetaData = function(data, cb) {
-  var me = this;
-  this.gce.start(function() {
-    var body = { items: data };
-    me.gce.setMetaData({ project: me.projectId, zone: me.zone, instance: me.instanceName, resource: body }, cb);
-  });
-};
-
-module.exports = Instance;
