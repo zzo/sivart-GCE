@@ -10,7 +10,7 @@ GCE.prototype.start = function(cb) {
   this.auth(function(token) {
     me.compute = google.compute({version: 'v1', auth: token,
       params: {zone: me.zone, project: me.projectId}});
-    cb();
+    cb(me.compute);
   });
 };
 
