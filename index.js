@@ -70,11 +70,32 @@ GCE.prototype.getZoneOperation = function(operation, cb) {
   this.compute.zoneOperations.get(operation, cb);
 };
 
+GCE.prototype.getGlobalOperation = function(operation, cb) {
+  this.compute.globalOperations.get(operation, cb);
+};
+
 // TODO(zzo): set a global timeout to fail after!
 GCE.prototype.waitForZoneOperation = function(res, cb) {
   var me = this;
   function waitforop() {
     me.getZoneOperation({operation: res.name}, function(error, resp) {
+      if (error) {
+        cb(error);
+      } else if (resp.status == 'DONE') {
+        cb(null, resp);
+      } else {
+        setTimeout(waitforop, 1000);
+      }
+    });
+  }
+  waitforop();
+};
+
+// TODO(zzo): set a global timeout to fail after!
+GCE.prototype.waitForGlobalOperation = function(res, cb) {
+  var me = this;
+  function waitforop() {
+    me.getGlobalOperation({operation: res.name}, function(error, resp) {
       if (error) {
         cb(error);
       } else if (resp.status == 'DONE') {
