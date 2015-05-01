@@ -61,7 +61,7 @@ GCE.prototype.deleteInstance = function(instance, cb) {
     } else if (result.kind == 'compute#operation') {
       me.waitForZoneOperation(result, cb);
     } else {
-      cb(result);
+      cb(null, result);
     }
   });
 };
@@ -105,4 +105,7 @@ GCE.prototype.setMetaData = function(data, cb) {
   });
 };
 
+GCE.prototype.getInstance = function(instance, cb) {
+  this.compute.instances.get(instance, cb);
+};
 module.exports = GCE;

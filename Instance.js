@@ -34,6 +34,9 @@ Instance.prototype.delete = function(cb) {
   });
 };
 
+Instance.prototype.get = function(cb) {
+  this.gce.getInstance({ instance: me.instanceName }, cb);
+};
 
 /**
  * Send console lines while still wanted.
