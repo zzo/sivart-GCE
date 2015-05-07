@@ -2,8 +2,9 @@ var GCE = require('./index');
 var Auth = require('./Auth');
 var fs = require('fs');
 var uuid = require('uuid');
+var path = require('path');
 
-var slaveJSON = fs.readFileSync(path.join(__dirname, 'instances/slave.json'));
+var slaveJSON = fs.readFileSync(path.join(__dirname, 'instances/slave.json'), 'utf8');
 
 function Instance(projectId, zone, instanceName) {
   this.projectId = projectId;
@@ -21,9 +22,10 @@ Instance.Slave = function() {
 
 Instance.prototype.buildSlave = function(script) {
   var data = JSON.parse(slaveJSON);
+
   data.name = this.instanceName;
-  data.disks[0].initializeParams.sourceImage = 'global/images/slave-1'; // Created with 'createSnapshot.js'
   data.metadata.items[0].value = script;
+
   this.create({ instance: data }, cb);
 };
 
