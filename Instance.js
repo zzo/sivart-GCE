@@ -20,7 +20,7 @@ Instance.Slave = function() {
   return new Instance(Auth.projectId, Auth.zone, instanceName);
 };
 
-Instance.prototype.buildSlave = function(script) {
+Instance.prototype.buildSlave = function(script, cb) {
   var data = JSON.parse(slaveJSON);
 
   data.name = this.instanceName;
