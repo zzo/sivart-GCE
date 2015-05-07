@@ -118,7 +118,7 @@ GCE.prototype.setMetaData = function(data, cb) {
     if (error) {
       cb(error);
     } else if (result.kind == 'compute#operation') {
-      console.log(result);
+      //console.log(result);
       me.waitForZoneOperation(result, cb);
     } else {
       cb(null, result);

@@ -1,5 +1,9 @@
 var GCE = require('./index');
+var Auth = require('./Auth');
 var fs = require('fs');
+var uuid = require('uuid');
+
+var slaveJSON = fs.readFileSync(path.join(__dirname, 'instances/slave.json'));
 
 function Instance(projectId, zone, instanceName) {
   this.projectId = projectId;
@@ -7,6 +11,21 @@ function Instance(projectId, zone, instanceName) {
   this.zone = zone;
   this.gce = new GCE(projectId, zone);
 }
+
+Instance.Slave = function() {
+  // some krazy random name
+  var instanceName = ['x', new Date().getTime(), uuid.v4()].join('-').slice(0, 63);
+  var buildDescription
+  return new Instance(Auth.projectId, Auth.zone, instanceName);
+};
+
+Instance.prototype.buildSlave = function(script) {
+  var data = JSON.parse(slaveJSON);
+  data.name = this.instanceName;
+  data.disks[0].initializeParams.sourceImage = 'global/images/slave-1'; // Created with 'createSnapshot.js'
+  data.metadata.items[0].value = script;
+  this.create({ instance: data }, cb);
+};
 
 /*
  * Create a GCE VM instance
