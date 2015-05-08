@@ -34,10 +34,11 @@ function Instance(projectId, zone, instanceName, type) {
   this.instanceBuildInfo.name = this.instanceName;
 }
 
-Instance.Factory = function(type) {
+// TODO(trostler): only export this function
+Instance.Factory = function(type, xtra) {
   switch(type) {
     case 'slave':
-      return Instance.Slave();
+      return Instance.Slave(xtra);
       break;
     case 'gihub':
       return Instance.Github();
@@ -49,14 +50,14 @@ Instance.Factory = function(type) {
       return Instance.GithubSnapshot();
       break;
     default:
-      throw new Error('I do not know ' + type);
+      throw new Error('I do not know instance type ' + type);
       break;
   }
 };
 
-Instance.Slave = function() {
+Instance.Slave = function(instanceName) {
   // some krazy random name
-  var instanceName = ['x', new Date().getTime(), uuid.v4()].join('-').slice(0, 63);
+  instanceName = instanceName || ['x', new Date().getTime(), uuid.v4()].join('-').slice(0, 63);
   return new Instance(Auth.projectId, Auth.zone, instanceName, 'slave');
 };
 

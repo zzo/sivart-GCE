@@ -5,7 +5,6 @@ var printf = require('util').format;
 var Q = require('q');
 Q.longStackSupport = true;
 
-
 function deleteExistingInstanceAndDisk(snapshot, cb) {
   snapshot.gce.start(function(err) {
     snapshot.gce.compute.disks.delete({disk: snapshot.diskName }, function() {
