@@ -10,7 +10,7 @@ var buildTypes = {
   },
   github: {
     instance: fs.readFileSync(path.join(__dirname, 'instances', 'github.json'), 'utf8'),
-    script: fs.readFileSync(path.join(__dirname, 'instances', 'github_startup.json'), 'utf8')
+    script: fs.readFileSync(path.join(__dirname, 'instances', 'github_startup.sh'), 'utf8')
   }
 };
 
