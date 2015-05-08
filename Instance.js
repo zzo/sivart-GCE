@@ -11,6 +11,10 @@ var buildTypes = {
   github: {
     instance: fs.readFileSync(path.join(__dirname, 'instances', 'github.json'), 'utf8'),
     script: fs.readFileSync(path.join(__dirname, 'instances', 'github_startup.sh'), 'utf8')
+  },
+  'slave-snapshot': {
+    instance: fs.readFileSync(path.join(__dirname, 'images', 'slave.json'), 'utf8'),
+    script: fs.readFileSync(path.join(__dirname, 'images', 'slave_startup.sh'), 'utf8')
   }
 };
 
@@ -26,6 +30,10 @@ Instance.Slave = function() {
   // some krazy random name
   var instanceName = ['x', new Date().getTime(), uuid.v4()].join('-').slice(0, 63);
   return new Instance(Auth.projectId, Auth.zone, instanceName, 'slave');
+};
+
+Instance.SlaveSnapshot = function() {
+  return new Instance(Auth.projectId, Auth.zone, 'slave-snapshot', 'slave-snapshot');
 };
 
 Instance.GithubServer = function() {
