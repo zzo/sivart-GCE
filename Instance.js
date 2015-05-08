@@ -15,6 +15,10 @@ var buildTypes = {
   'slave-snapshot': {
     instance: fs.readFileSync(path.join(__dirname, 'images', 'slave.json'), 'utf8'),
     script: fs.readFileSync(path.join(__dirname, 'images', 'slave_startup.sh'), 'utf8')
+  },
+  'github-snapshot': {
+    instance: fs.readFileSync(path.join(__dirname, 'images', 'github.json'), 'utf8'),
+    script: fs.readFileSync(path.join(__dirname, 'images', 'github_startup.sh'), 'utf8')
   }
 };
 
@@ -25,6 +29,26 @@ function Instance(projectId, zone, instanceName, type) {
   this.gce = new GCE(projectId, zone);
   this.type = type;
 }
+
+Instance.Factory = function(type) {
+  switch(type) {
+    case 'slave':
+      return Instance.Slave();
+      break;
+    case 'gihub':
+      return Instance.Github();
+      break;
+    case 'slave-snapshot':
+      return Instance.SlaveSnapshot();
+      break;
+    case 'github-snapshot':
+      return Instance.GithubSnapshot();
+      break;
+    default:
+      throw new Error('I do not know ' + type);
+      break;
+  }
+};
 
 Instance.Slave = function() {
   // some krazy random name
@@ -40,11 +64,17 @@ Instance.GithubServer = function() {
   return new Instance(Auth.projectId, Auth.zone, 'github', 'github');
 };
 
+Instance.GithubSnapshot = function() {
+  return new Instance(Auth.projectId, Auth.zone, 'github-snapshot', 'github-snapshot');
+};
+
 Instance.prototype.build = function(script, cb) {
   var data = JSON.parse(buildTypes[this.type].instance);
   data.name = this.instanceName;
 
-  if (typeof script == 'function') {
+  this.diskName = data.disks[0].deviceName;
+
+  if (typeof script === 'function') {
     cb = script;
     script = buildTypes[this.type].script;
   }
@@ -81,7 +111,11 @@ Instance.prototype.delete = function(cb) {
 };
 
 Instance.prototype.get = function(cb) {
-  this.gce.getInstance({ instance: me.instanceName }, cb);
+  this.gce.getInstance({ instance: this.instanceName }, cb);
+};
+
+Instance.prototype.getSerialConsoleOutput = function(cb) {
+  this.gce.getSerialConsoleOutput({ instance: this.instanceName }, cb);
 };
 
 /**

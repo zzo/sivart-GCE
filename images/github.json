@@ -4,7 +4,7 @@
       "type": "PERSISTENT",
       "boot": true,
       "mode": "READ_WRITE",
-      "deviceName": "slave-snapshot",
+      "deviceName": "github-snapshot",
       "autoDelete": false,
       "initializeParams": {
         "sourceImage": "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-1404-trusty-v20150316",
@@ -33,6 +33,7 @@
   },
   "tags": {
     "items": [
+      "http-server",
       "https-server"
     ]
   },
@@ -43,17 +44,18 @@
     "automaticRestart": true,
     "onHostMaintenance": "MIGRATE"
   },
-  "name": "slave-snapshot",
-  "machineType": "https://www.googleapis.com/compute/v1/projects/focal-inquiry-92622/zones/us-central1-a/machineTypes/n1-highmem-2",
+  "name": "github-snapshot",
+  "machineType": "https://www.googleapis.com/compute/v1/projects/focal-inquiry-92622/zones/us-central1-a/machineTypes/n1-standard-1",
   "serviceAccounts": [
     {
       "email": "default",
       "scopes": [
         "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/compute",
         "https://www.googleapis.com/auth/devstorage.full_control",
         "https://www.googleapis.com/auth/taskqueue",
         "https://www.googleapis.com/auth/datastore",
-        "https://www.googleapis.com/auth/logging.write",
+        "https://www.googleapis.com/auth/logging.admin",
         "https://www.googleapis.com/auth/cloud-platform"
       ]
     }

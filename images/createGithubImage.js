@@ -1,4 +1,4 @@
 'use strict';
 
 var ImageMaker = require('./ImageMaker');
-ImageMaker('slave-snapshot', 'slave-1');
+ImageMaker('github-snapshot', 'github');

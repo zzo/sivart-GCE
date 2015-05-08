@@ -1,6 +1,6 @@
 var Instance = require('../Instance');
 
-var githubServer = Instance.GithubServer();
+var githubServer = Instance.Factory('github');
 githubServer.delete(function() {
   githubServer.build(function(err, ok) {
     if (err) {
