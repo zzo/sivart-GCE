@@ -7,22 +7,11 @@ Q.longStackSupport = true;
 
 module.exports = function(type, imageName) {
   var snapshot = Instance.Factory(type);
-  console.log(snapshot);
-//  var instanceName = snapshot.instanceName;
-//  var zone = snapshot.zone;
   console.log('creating instance...');
   Q.ninvoke(snapshot, 'build')
     .then(function() {
         console.log('waiting for instance...');
         var deferred = Q.defer();
-        snapshot.tail_gce_console(function(err, data) {
-          console.log(data);
-          if (data.toString().match('__ALIVE__')) {
-            deferred.resolve();
-            return true;
-          }
-        });
-/*
         function getConsole() {
           snapshot.getSerialConsoleOutput(function(err, output) {
             if (err) {
@@ -39,7 +28,6 @@ module.exports = function(type, imageName) {
           });
         }
         getConsole();
-        */
         return deferred.promise;
       }).then(function() {
         console.log('Image created - deleting instance...');
@@ -52,12 +40,6 @@ module.exports = function(type, imageName) {
         var deferred = Q.defer();
         console.log(printf('Deleting current "%s" image...', imageName));
         compute.images.delete({image: imageName }, function() {
-          /*
-          console.log('Deleted current image:');
-          console.log(err);
-          console.log(resp);
-          console.log('resolving promise');
-          */
           // ignore errors
           deferred.resolve(compute);
         });
