@@ -41,7 +41,7 @@ Instance.Factory = function(type, xtra) {
       return Instance.Slave(xtra);
       break;
     case 'github':
-      return Instance.Github();
+      return Instance.GithubListener();
       break;
     case 'slave-snapshot':
       return Instance.SlaveSnapshot();
@@ -65,7 +65,7 @@ Instance.SlaveSnapshot = function() {
   return new Instance(Auth.projectId, Auth.zone, 'slave-snapshot', 'slave-snapshot');
 };
 
-Instance.GithubServer = function() {
+Instance.GithubListener = function() {
   return new Instance(Auth.projectId, Auth.zone, 'github', 'github');
 };
 
