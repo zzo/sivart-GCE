@@ -4,26 +4,43 @@ var fs = require('fs');
 var uuid = require('uuid');
 var path = require('path');
 
-var slaveJSON = fs.readFileSync(path.join(__dirname, 'instances/slave.json'), 'utf8');
+var buildTypes = {
+  slave: { 
+    instance: fs.readFileSync(path.join(__dirname, 'instances', 'slave.json'), 'utf8')
+  },
+  github: {
+    instance: fs.readFileSync(path.join(__dirname, 'instances', 'github.json'), 'utf8'),
+    script: fs.readFileSync(path.join(__dirname, 'instances', 'github_startup.json'), 'utf8')
+  }
+};
 
-function Instance(projectId, zone, instanceName) {
+function Instance(projectId, zone, instanceName, type) {
   this.projectId = projectId;
   this.instanceName = instanceName;
   this.zone = zone;
   this.gce = new GCE(projectId, zone);
+  this.type = type;
 }
 
 Instance.Slave = function() {
   // some krazy random name
   var instanceName = ['x', new Date().getTime(), uuid.v4()].join('-').slice(0, 63);
-  var buildDescription
-  return new Instance(Auth.projectId, Auth.zone, instanceName);
+  return new Instance(Auth.projectId, Auth.zone, instanceName, 'slave');
 };
 
-Instance.prototype.buildSlave = function(script, cb) {
-  var data = JSON.parse(slaveJSON);
+Instance.GithubServer = function() {
+  return new Instance(Auth.projectId, Auth.zone, 'github', 'github');
+};
 
+Instance.prototype.build = function(script, cb) {
+  var data = JSON.parse(buildTypes[this.type].instance);
   data.name = this.instanceName;
+
+  if (typeof script == 'function') {
+    cb = script;
+    script = buildTypes[this.type].script;
+  }
+
   data.metadata.items[0].value = script;
 
   this.create({ instance: data }, cb);
