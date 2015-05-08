@@ -1,6 +1,6 @@
 'use strict';
 
-var Instance = require('sivart-GCE/Instance');
+var Instance = require('../Instance');
 var printf = require('util').format;
 var Q = require('q');
 Q.longStackSupport = true;
@@ -12,7 +12,7 @@ var instanceName = snapshot.instanceName;
 var zone = snapshot.zone;
 
 console.log('creating instance...');
-Q.ninvoke(snapshot, 'build', { instance: data })
+Q.ninvoke(snapshot, 'build')
   .then(function(result) {
       console.log('waiting for instance...');
       var deferred = Q.defer();
