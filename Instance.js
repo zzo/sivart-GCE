@@ -40,7 +40,7 @@ Instance.Factory = function(type, xtra) {
     case 'slave':
       return Instance.Slave(xtra);
       break;
-    case 'gihub':
+    case 'github':
       return Instance.Github();
       break;
     case 'slave-snapshot':
