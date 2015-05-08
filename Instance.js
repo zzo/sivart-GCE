@@ -6,18 +6,18 @@ var path = require('path');
 
 var buildTypes = {
   slave: { 
-    instance: fs.readFileSync(path.join(__dirname, 'instances', 'slave.json'), 'utf8')
+    instance: JSON.parse(fs.readFileSync(path.join(__dirname, 'instances', 'slave.json'), 'utf8'))
   },
   github: {
-    instance: fs.readFileSync(path.join(__dirname, 'instances', 'github.json'), 'utf8'),
+    instance: JSON.parse(fs.readFileSync(path.join(__dirname, 'instances', 'github.json'), 'utf8')),
     script: fs.readFileSync(path.join(__dirname, 'instances', 'github_startup.sh'), 'utf8')
   },
   'slave-snapshot': {
-    instance: fs.readFileSync(path.join(__dirname, 'images', 'slave.json'), 'utf8'),
+    instance: JSON.parse(fs.readFileSync(path.join(__dirname, 'images', 'slave.json'), 'utf8')),
     script: fs.readFileSync(path.join(__dirname, 'images', 'slave_startup.sh'), 'utf8')
   },
   'github-snapshot': {
-    instance: fs.readFileSync(path.join(__dirname, 'images', 'github.json'), 'utf8'),
+    instance: JSON.parse(fs.readFileSync(path.join(__dirname, 'images', 'github.json'), 'utf8')),
     script: fs.readFileSync(path.join(__dirname, 'images', 'github_startup.sh'), 'utf8')
   }
 };
@@ -28,6 +28,10 @@ function Instance(projectId, zone, instanceName, type) {
   this.zone = zone;
   this.gce = new GCE(projectId, zone);
   this.type = type;
+
+  this.instanceBuildInfo = buildTypes[this.type].instance;
+  this.diskName = this.instanceBuildInfo.disks[0].deviceName;
+  this.instanceBuildInfo.name = this.instanceName;
 }
 
 Instance.Factory = function(type) {
@@ -69,19 +73,14 @@ Instance.GithubSnapshot = function() {
 };
 
 Instance.prototype.build = function(script, cb) {
-  var data = JSON.parse(buildTypes[this.type].instance);
-  data.name = this.instanceName;
-
-  this.diskName = data.disks[0].deviceName;
 
   if (typeof script === 'function') {
     cb = script;
     script = buildTypes[this.type].script;
   }
 
-  data.metadata.items[0].value = script;
-
-  this.create({ instance: data }, cb);
+  this.instanceBuildInfo.metadata.items[0].value = script;
+  this.create({ instance: this.instanceBuildInfo }, cb);
 };
 
 /*
