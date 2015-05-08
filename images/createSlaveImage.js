@@ -1,4 +1,5 @@
 'use strict';
 
 var ImageMaker = require('./ImageMaker');
-ImageMaker('slave-snapshot', 'slave-1');
+// This must match what's in ./instances/slave.json !!!
+ImageMaker('slave-snapshot', 'slave-2');
