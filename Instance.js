@@ -6,18 +6,18 @@ var path = require('path');
 
 var buildTypes = {
   slave: { 
-    instance: JSON.parse(fs.readFileSync(path.join(__dirname, 'instances', 'slave.json'), 'utf8'))
+    instance: fs.readFileSync(path.join(__dirname, 'instances', 'slave.json'), 'utf8')
   },
   github: {
-    instance: JSON.parse(fs.readFileSync(path.join(__dirname, 'instances', 'github.json'), 'utf8')),
+    instance: fs.readFileSync(path.join(__dirname, 'instances', 'github.json'), 'utf8'),
     script: fs.readFileSync(path.join(__dirname, 'instances', 'github_startup.sh'), 'utf8')
   },
   'slave-snapshot': {
-    instance: JSON.parse(fs.readFileSync(path.join(__dirname, 'images', 'slave.json'), 'utf8')),
+    instance: fs.readFileSync(path.join(__dirname, 'images', 'slave.json'), 'utf8'),
     script: fs.readFileSync(path.join(__dirname, 'images', 'slave_startup.sh'), 'utf8')
   },
   'github-snapshot': {
-    instance: JSON.parse(fs.readFileSync(path.join(__dirname, 'images', 'github.json'), 'utf8')),
+    instance: fs.readFileSync(path.join(__dirname, 'images', 'github.json'), 'utf8'),
     script: fs.readFileSync(path.join(__dirname, 'images', 'github_startup.sh'), 'utf8')
   }
 };
@@ -29,7 +29,7 @@ function Instance(projectId, zone, instanceName, type) {
   this.gce = new GCE(projectId, zone);
   this.type = type;
 
-  this.instanceBuildInfo = buildTypes[this.type].instance;
+  this.instanceBuildInfo = JSON.parse(buildTypes[this.type].instance);
   this.diskName = this.instanceBuildInfo.disks[0].deviceName;
   this.instanceBuildInfo.name = this.instanceName;
 }
