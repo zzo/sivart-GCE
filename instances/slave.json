@@ -7,7 +7,7 @@
       "deviceName": "slave-disk",
       "autoDelete": true,
       "initializeParams": {
-        "sourceImage": "global/images/slave-2",
+        "sourceImage": "global/images/slave-3",
         "diskType": "https://www.googleapis.com/compute/v1/projects/focal-inquiry-92622/zones/us-central1-a/diskTypes/pd-standard"
       }
     }
