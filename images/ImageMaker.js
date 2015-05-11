@@ -68,7 +68,7 @@ module.exports = function(type, imageName) {
           });
          })
         .then(function(imageInsertResponse) {
-          console.log('Creating new image (be pateint!)...');
+          console.log('Creating new image (be patient!)...');
           return Q.ninvoke(snapshot.gce, 'waitForGlobalOperation', imageInsertResponse[0]);
         })
         .then(function() {
