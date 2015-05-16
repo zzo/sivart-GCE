@@ -12,6 +12,10 @@ var buildTypes = {
     instance: fs.readFileSync(path.join(__dirname, 'instances', 'github.json'), 'utf8'),
     script: fs.readFileSync(path.join(__dirname, 'instances', 'github_startup.sh'), 'utf8')
   },
+  ui: {
+    instance: fs.readFileSync(path.join(__dirname, 'instances', 'ui.json'), 'utf8'),
+    script: fs.readFileSync(path.join(__dirname, 'instances', 'ui_startup.sh'), 'utf8')
+  },
   'slave-snapshot': {
     instance: fs.readFileSync(path.join(__dirname, 'images', 'slave.json'), 'utf8'),
     script: fs.readFileSync(path.join(__dirname, 'images', 'slave_startup.sh'), 'utf8')
@@ -27,11 +31,13 @@ function Instance(projectId, zone, instanceName, type) {
   this.instanceName = instanceName;
   this.zone = zone;
   this.gce = new GCE(projectId, zone);
-  this.type = type;
 
-  this.instanceBuildInfo = JSON.parse(buildTypes[this.type].instance);
-  this.diskName = this.instanceBuildInfo.disks[0].deviceName;
-  this.instanceBuildInfo.name = this.instanceName;
+  if (type) {
+    this.type = type;
+    this.instanceBuildInfo = JSON.parse(buildTypes[this.type].instance);
+    this.diskName = this.instanceBuildInfo.disks[0].deviceName;
+    this.instanceBuildInfo.name = this.instanceName;
+  }
 }
 
 // TODO(trostler): only export this function
@@ -42,6 +48,9 @@ Instance.Factory = function(type, xtra) {
       break;
     case 'github':
       return Instance.GithubListener();
+      break;
+    case 'ui':
+      return Instance.UI();
       break;
     case 'slave-snapshot':
       return Instance.SlaveSnapshot();
@@ -67,6 +76,10 @@ Instance.SlaveSnapshot = function() {
 
 Instance.GithubListener = function() {
   return new Instance(Auth.projectId, Auth.zone, 'github', 'github');
+};
+
+Instance.UI = function() {
+  return new Instance(Auth.projectId, Auth.zone, 'ui', 'ui');
 };
 
 Instance.GithubSnapshot = function() {
@@ -115,7 +128,10 @@ Instance.prototype.get = function(cb) {
 };
 
 Instance.prototype.getSerialConsoleOutput = function(cb) {
-  this.gce.getSerialConsoleOutput({ instance: this.instanceName }, cb);
+  var me = this;
+  this.gce.start(function() {
+    me.gce.getSerialConsoleOutput({ instance: me.instanceName }, cb);
+  });
 };
 
 /**
@@ -123,14 +139,14 @@ Instance.prototype.getSerialConsoleOutput = function(cb) {
  */
 Instance.prototype.tail_gce_console = function(cb) {
     var me = this;
-    var seen_output = '';
+    var seen_length = 0;
     this.gce.start(function() {
       function getout() {
         me.gce.getSerialConsoleOutput({ instance: me.instanceName }, function(err, total_output) {
           if (!err) {
             var contents = total_output.contents;
-            contents.replace(seen_output, '');
-            seen_output += contents;
+            contents = contents.slice(seen_length);
+            seen_length += contents.length;
             var stop = cb(null, contents);
             if (!stop) {
               setTimeout(getout, 5000);
