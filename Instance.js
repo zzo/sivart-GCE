@@ -75,11 +75,11 @@ Instance.Slave = function(iName) {
     // Generate a new pub/priv key pair
     var keys = ursa.generatePrivateKey();
     var pubSsh = keys.toPublicSsh('base64');
-    this.instanceBuildInfo.metadata.items.push({
+    newSlave.instanceBuildInfo.metadata.items.push({
       key: 'sshKeys',
       value: [ 'sivart:ssh-rsa', pubSsh, 'sivart'].join(' ')
     });
-    this.privateKey = keys.toPrivatePem('base64');
+    newSlave.privateKey = keys.toPrivatePem('base64');
   }
   return newSlave;
 };
