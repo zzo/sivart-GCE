@@ -142,7 +142,20 @@ Instance.prototype.delete = function(cb) {
 };
 
 Instance.prototype.get = function(cb) {
-  this.gce.getInstance({ instance: this.instanceName }, cb);
+  var me = this;
+  this.gce.start(function() {
+    me.gce.getInstance({ instance: me.instanceName }, cb);
+  });
+};
+
+Instance.prototype.getIP = function(cb) {
+  this.get(function(err, instance) {
+    if (err) {
+      cb(err);
+    } else {
+      cb(null, instance.networkInterfaces[0].networkIP);
+    }
+  });
 };
 
 Instance.prototype.getSerialConsoleOutput = function(cb) {
