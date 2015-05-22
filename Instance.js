@@ -79,7 +79,11 @@ Instance.Slave = function(iName) {
       key: 'sshKeys',
       value: [ 'sivart:ssh-rsa', pubSsh, 'sivart'].join(' ')
     });
-    newSlave.privateKey = keys.toPrivatePem('base64');
+
+    // Now set up private key - up to caller to store this somewhere
+    var privPem = keys.toPrivatePem();
+    var priv = ursa.createPrivateKey(privPem);
+    newSlave.privateKey = priv.toPrivatePem().toString();
   }
   return newSlave;
 };
