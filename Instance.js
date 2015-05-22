@@ -1,11 +1,14 @@
+'use strict';
+
 var GCE = require('./index');
 var Auth = require('./Auth');
 var fs = require('fs');
 var uuid = require('uuid');
 var path = require('path');
+var ursa = require('ursa');
 
 var buildTypes = {
-  slave: { 
+  slave: {
     instance: fs.readFileSync(path.join(__dirname, 'instances', 'slave.json'), 'utf8')
   },
   github: {
@@ -42,7 +45,7 @@ function Instance(projectId, zone, instanceName, type) {
 
 // TODO(trostler): only export this function
 Instance.Factory = function(type, xtra) {
-  switch(type) {
+  switch (type) {
     case 'slave':
       return Instance.Slave(xtra);
       break;
@@ -64,10 +67,21 @@ Instance.Factory = function(type, xtra) {
   }
 };
 
-Instance.Slave = function(instanceName) {
+Instance.Slave = function(iName) {
   // some krazy random name
-  instanceName = instanceName || ['x', new Date().getTime(), uuid.v4()].join('-').slice(0, 63);
-  return new Instance(Auth.projectId, Auth.zone, instanceName, 'slave');
+  var instanceName = iName || ['x', new Date().getTime(), uuid.v4()].join('-').slice(0, 63);
+  var newSlave = new Instance(Auth.projectId, Auth.zone, instanceName, 'slave');
+  if (!iName) {
+    // Generate a new pub/priv key pair
+    var keys = ursa.generatePrivateKey();
+    var pubSsh = keys.toPublicSsh('base64');
+    this.instanceBuildInfo.metadata.items.push({
+      key: 'sshKeys',
+      value: [ 'sivart:ssh-rsa', pubSsh, 'sivart'].join(' ')
+    });
+    this.privateKey = keys.toPrivatePem('base64');
+  }
+  return newSlave;
 };
 
 Instance.SlaveSnapshot = function() {
@@ -134,9 +148,7 @@ Instance.prototype.getSerialConsoleOutput = function(cb) {
   });
 };
 
-/**
- * Send console lines while still wanted.
- */
+// Send console lines while still wanted.
 Instance.prototype.tail_gce_console = function(cb) {
     var me = this;
     var seen_length = 0;
