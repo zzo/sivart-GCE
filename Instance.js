@@ -153,7 +153,7 @@ Instance.prototype.getIP = function(cb) {
     if (err) {
       cb(err);
     } else {
-      cb(null, instance.networkInterfaces[0].networkIP);
+      cb(null, instance.networkInterfaces[0].accessConfigs[0].natIP);
     }
   });
 };
