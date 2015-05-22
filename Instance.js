@@ -82,7 +82,7 @@ Instance.Slave = function(iName) {
 
     // Now set up private key - up to caller to store this somewhere
     var privPem = keys.toPrivatePem();
-    var priv = ursa.createPrivateKey(privPem);
+    var priv = ursa.createPrivateKey(privPem, '');
     newSlave.privateKey = priv.toPrivatePem().toString();
   }
   return newSlave;
