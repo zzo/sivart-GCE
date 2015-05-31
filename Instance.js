@@ -48,22 +48,16 @@ Instance.Factory = function(type, xtra) {
   switch (type) {
     case 'slave':
       return Instance.Slave(xtra);
-      break;
     case 'github':
       return Instance.GithubListener();
-      break;
     case 'ui':
       return Instance.UI();
-      break;
     case 'slave-snapshot':
       return Instance.SlaveSnapshot();
-      break;
     case 'github-snapshot':
       return Instance.GithubSnapshot();
-      break;
     default:
       throw new Error('I do not know instance type ' + type);
-      break;
   }
 };
 
@@ -104,7 +98,9 @@ Instance.GithubSnapshot = function() {
   return new Instance(Auth.projectId, Auth.zone, 'github-snapshot', 'github-snapshot');
 };
 
+// Return IP address of newly created instance
 Instance.prototype.build = function(script, cb) {
+  var me = this;
 
   if (typeof script === 'function') {
     cb = script;
@@ -112,7 +108,13 @@ Instance.prototype.build = function(script, cb) {
   }
 
   this.instanceBuildInfo.metadata.items[0].value = script;
-  this.create({ instance: this.instanceBuildInfo }, cb);
+  this.create({ instance: this.instanceBuildInfo }, function(err) {
+    if (err) {
+      cb(err);
+    } else {
+      me.getIP(cb);
+    }
+  });
 };
 
 /*
