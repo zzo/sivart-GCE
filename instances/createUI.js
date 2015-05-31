@@ -9,7 +9,7 @@ uiServer.delete(function() {
     } else {
       uiServer.tail_gce_console(function(err, data) {
         console.log(data);
-        if (data.toString().match('__ALIVE__')) {
+        if (data.toString().match('Forever processing file:')) {
           return true;
         }
       });

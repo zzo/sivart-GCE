@@ -5,4 +5,4 @@ git clone https://github.com/zzo/sivart-ui
 cd sivart-ui
 HOME=/root npm install
 export NODE_ENV=production
-nodejs server.js 80
+npm start
