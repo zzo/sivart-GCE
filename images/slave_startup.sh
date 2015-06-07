@@ -9,8 +9,8 @@ echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/source
 
 apt-get update
 
-### or -beta or -unstable (chrome)
-apt-get install -y git xvfb build-essential unzip google-chrome-stable libssl-dev default-jre nodejs npm lzop
+### or -beta or -unstable for chrome
+apt-get install -y git xvfb build-essential unzip google-chrome-stable libssl-dev default-jre nodejs npm lzop firefox
 ln -s /usr/bin/nodejs /usr/bin/node
 
 ###
